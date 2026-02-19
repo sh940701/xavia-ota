@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 
-import { DatabaseInterface, Release, Tracking, TrackingMetrics } from './DatabaseInterface';
+import { DatabaseInterface, Release, ReleaseTrackingCount, Tracking, TrackingMetrics } from './DatabaseInterface';
 import { Tables } from './DatabaseFactory';
 
 export class PostgresDatabase implements DatabaseInterface {
@@ -68,6 +68,20 @@ export class PostgresDatabase implements DatabaseInterface {
     `;
     const { rows } = await this.pool.query(query);
     return rows.map((row) => ({
+      platform: row.platform,
+      count: Number(row.count),
+    }));
+  }
+
+  async getTrackingCountsPerRelease(): Promise<ReleaseTrackingCount[]> {
+    const query = `
+      SELECT release_id as "releaseId", platform, COUNT(*) as count
+      FROM ${Tables.RELEASES_TRACKING}
+      GROUP BY release_id, platform
+    `;
+    const { rows } = await this.pool.query(query);
+    return rows.map((row) => ({
+      releaseId: row.releaseId,
       platform: row.platform,
       count: Number(row.count),
     }));

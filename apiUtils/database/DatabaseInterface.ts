@@ -20,6 +20,12 @@ export interface TrackingMetrics {
   count: number;
 }
 
+export interface ReleaseTrackingCount {
+  releaseId: string;
+  platform: string;
+  count: number;
+}
+
 export interface DatabaseInterface {
   createRelease(release: Omit<Release, 'id'>): Promise<Release>;
   getRelease(id: string): Promise<Release | null>;
@@ -29,4 +35,5 @@ export interface DatabaseInterface {
   getReleaseTrackingMetrics(releaseId: string): Promise<TrackingMetrics[]>;
   getReleaseTrackingMetricsForAllReleases(): Promise<TrackingMetrics[]>;
   getLatestReleaseRecordForRuntimeVersion(runtimeVersion: string): Promise<Release | null>;
+  getTrackingCountsPerRelease(): Promise<ReleaseTrackingCount[]>;
 }

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-import { DatabaseInterface, Release, Tracking, TrackingMetrics } from './DatabaseInterface';
+import { DatabaseInterface, Release, ReleaseTrackingCount, Tracking, TrackingMetrics } from './DatabaseInterface';
 import { Tables } from './DatabaseFactory';
 
 export class SupabaseDatabase implements DatabaseInterface {
@@ -117,6 +117,27 @@ export class SupabaseDatabase implements DatabaseInterface {
         count: Number(androidCount),
       },
     ];
+  }
+
+  async getTrackingCountsPerRelease(): Promise<ReleaseTrackingCount[]> {
+    const { data, error } = await this.supabase
+      .from(Tables.RELEASES_TRACKING)
+      .select('release_id, platform');
+
+    if (error) throw new Error(error.message);
+
+    const countMap = new Map<string, number>();
+    for (const row of data) {
+      const key = `${row.release_id}::${row.platform}`;
+      countMap.set(key, (countMap.get(key) || 0) + 1);
+    }
+
+    const results: ReleaseTrackingCount[] = [];
+    countMap.forEach((count, key) => {
+      const [releaseId, platform] = key.split('::');
+      results.push({ releaseId, platform, count });
+    });
+    return results;
   }
 
   async createRelease(release: Omit<Release, 'id'>): Promise<Release> {
