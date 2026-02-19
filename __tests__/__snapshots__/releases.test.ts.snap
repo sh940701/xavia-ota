@@ -17,6 +17,13 @@ Object {
   "releases": Array [
     Object {
       "commitHash": "abc123",
+      "commitMessage": "initial release",
+      "downloads": Object {
+        "android": 5,
+        "ios": 10,
+        "total": 15,
+      },
+      "id": "test-uuid-1",
       "path": "updates/1.0.0/update.zip",
       "runtimeVersion": "1.0.0",
       "size": 1000,

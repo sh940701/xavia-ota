@@ -34,9 +34,15 @@ describe('Releases API', () => {
     const mockDatabase = {
       listReleases: jest.fn().mockResolvedValue([
         {
+          id: 'test-uuid-1',
           path: 'updates/1.0.0/update.zip',
           commitHash: 'abc123',
+          commitMessage: 'initial release',
         },
+      ]),
+      getTrackingCountsPerRelease: jest.fn().mockResolvedValue([
+        { releaseId: 'test-uuid-1', platform: 'ios', count: 10 },
+        { releaseId: 'test-uuid-1', platform: 'android', count: 5 },
       ]),
     };
 
@@ -47,7 +53,45 @@ describe('Releases API', () => {
     await releasesHandler(req, res);
 
     expect(res._getStatusCode()).toBe(200);
-    expect(JSON.parse(res._getData())).toMatchSnapshot();
+    const data = JSON.parse(res._getData());
+    expect(data.releases[0].id).toBe('test-uuid-1');
+    expect(data.releases[0].downloads).toEqual({ ios: 10, android: 5, total: 15 });
+    expect(data).toMatchSnapshot();
+  });
+
+  it('should return zero downloads when no tracking data exists', async () => {
+    const mockStorage = {
+      listDirectories: jest.fn().mockResolvedValue(['2.0.0']),
+      listFiles: jest.fn().mockResolvedValue([
+        {
+          name: 'update.zip',
+          created_at: '2024-04-01T00:00:00Z',
+          metadata: { size: 2000 },
+        },
+      ]),
+    };
+
+    const mockDatabase = {
+      listReleases: jest.fn().mockResolvedValue([
+        {
+          id: 'test-uuid-2',
+          path: 'updates/2.0.0/update.zip',
+          commitHash: 'def456',
+          commitMessage: 'second release',
+        },
+      ]),
+      getTrackingCountsPerRelease: jest.fn().mockResolvedValue([]),
+    };
+
+    (StorageFactory.getStorage as jest.Mock).mockReturnValue(mockStorage);
+    (DatabaseFactory.getDatabase as jest.Mock).mockReturnValue(mockDatabase);
+
+    const { req, res } = createMocks({ method: 'GET' });
+    await releasesHandler(req, res);
+
+    expect(res._getStatusCode()).toBe(200);
+    const data = JSON.parse(res._getData());
+    expect(data.releases[0].downloads).toEqual({ ios: 0, android: 0, total: 0 });
   });
 
   it('should handle errors gracefully', async () => {
