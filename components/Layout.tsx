@@ -1,4 +1,4 @@
-import { Box, Flex, VStack, Button, FlexProps } from '@chakra-ui/react';
+import { Box, Flex, VStack, Text, FlexProps } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { FaSignOutAlt, FaTachometerAlt, FaTags } from 'react-icons/fa';
 import Image from 'next/image';
@@ -7,8 +7,8 @@ export default function Layout({ children, ...props }: { children: React.ReactNo
   const router = useRouter();
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: <FaTachometerAlt fontSize="1.25rem" /> },
-    { name: 'Releases', path: '/releases', icon: <FaTags fontSize="1.25rem" /> },
+    { name: 'Dashboard', path: '/dashboard', icon: <FaTachometerAlt size="1rem" /> },
+    { name: 'Releases', path: '/releases', icon: <FaTags size="1rem" /> },
   ];
 
   const handleLogout = () => {
@@ -17,60 +17,82 @@ export default function Layout({ children, ...props }: { children: React.ReactNo
   };
 
   return (
-    <Box className="w-full" height="100vh" {...props}>
+    <Flex height="100vh" overflow="hidden">
+      {/* Sidebar */}
       <Box
-        w="full"
-        p={4}
-        className=" text-white h-[6rem] border-b-gray-200 border-b-2"
+        w="240px"
+        flexShrink={0}
         display="flex"
-        alignItems="center"
-        justifyContent="center"
-        position="relative">
-        <Box>
+        flexDirection="column"
+        py={6}
+        px={4}
+        style={{
+          background: 'linear-gradient(180deg, #5655D7 0%, #3d3cb8 100%)',
+        }}>
+        {/* Logo */}
+        <Box mb={10} px={2} pt={2}>
           <Image
             src="/xavia_logo.png"
-            width={200}
-            height={200}
-            style={{ objectFit: 'contain' }}
+            width={140}
+            height={48}
+            style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
             alt="Xavia Logo"
           />
         </Box>
-      </Box>
-      <Flex className="h-[calc(100vh-6rem)] ">
-        <Box
-          w="250px"
-          p={4}
-          className="h-full border-r-gray-200 border-r-2"
-          display="flex"
-          flexDirection="column"
-          justifyContent="space-between">
-          <VStack spacing={4} align="stretch">
-            {navItems.map((item) => (
-              <Button
+
+        {/* Nav */}
+        <VStack spacing={1} align="stretch" flex={1}>
+          {navItems.map((item) => {
+            const isActive = router.pathname === item.path;
+            return (
+              <Box
                 key={item.path}
-                variant={router.pathname === item.path ? 'solid' : 'ghost'}
-                colorScheme={router.pathname === item.path ? 'primary' : 'gray'}
-                rightIcon={item.icon}
-                onClick={() => router.push(item.path)}
-                justifyContent="space-between">
-                <Box flex="1" textAlign="left">
-                  {item.name}
-                </Box>
-              </Button>
-            ))}
-          </VStack>
-          <Button
-            variant="outline"
-            colorScheme="red"
-            onClick={handleLogout}
-            rightIcon={<FaSignOutAlt />}>
-            Logout
-          </Button>
+                display="flex"
+                alignItems="center"
+                gap={3}
+                px={4}
+                py="10px"
+                borderRadius="10px"
+                cursor="pointer"
+                bg={isActive ? 'rgba(255,255,255,0.18)' : 'transparent'}
+                color="white"
+                fontWeight={isActive ? '600' : '400'}
+                fontSize="sm"
+                style={{ opacity: isActive ? 1 : 0.72 }}
+                _hover={{ bg: 'rgba(255,255,255,0.14)', opacity: 1 }}
+                transition="all 0.15s ease"
+                onClick={() => router.push(item.path)}>
+                {item.icon}
+                <Text>{item.name}</Text>
+              </Box>
+            );
+          })}
+        </VStack>
+
+        {/* Logout */}
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={3}
+          px={4}
+          py="10px"
+          borderRadius="10px"
+          cursor="pointer"
+          color="white"
+          fontSize="sm"
+          style={{ opacity: 0.65 }}
+          _hover={{ bg: 'rgba(255,255,255,0.12)', opacity: 1 }}
+          transition="all 0.15s ease"
+          onClick={handleLogout}>
+          <FaSignOutAlt size="1rem" />
+          <Text>Logout</Text>
         </Box>
-        <Box flex={1} p={8}>
-          {children}
-        </Box>
-      </Flex>
-    </Box>
+      </Box>
+
+      {/* Content */}
+      <Box flex={1} overflow="auto" p={8} bg="#F7F8FA" {...props}>
+        {children}
+      </Box>
+    </Flex>
   );
 }

@@ -7,7 +7,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     colors: {
       background: '#F7F8FA',
       primary: {
-        DEFAULT: '#5655D7', // Primary color
+        DEFAULT: '#5655D7',
+        50: '#EEEEF9',
         100: '#DDDDF7',
         200: '#BBBBEF',
         300: '#9A99E7',
@@ -18,6 +19,18 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         800: '#4544AC',
         900: '#4040A1',
       },
+    },
+    styles: {
+      global: {
+        body: {
+          bg: '#F7F8FA',
+          color: 'gray.800',
+        },
+      },
+    },
+    fonts: {
+      heading: `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`,
+      body: `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`,
     },
   });
   return <ChakraProvider theme={theme}>{children}</ChakraProvider>;
