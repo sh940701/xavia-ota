@@ -1,6 +1,7 @@
 import { createMocks } from 'node-mocks-http';
 
 import { DatabaseFactory } from '../apiUtils/database/DatabaseFactory';
+import { createSessionToken, SESSION_COOKIE_NAME } from '../apiUtils/helpers/AuthHelper';
 import { StorageFactory } from '../apiUtils/storage/StorageFactory';
 import releasesHandler from '../pages/api/releases';
 
@@ -8,8 +9,22 @@ jest.mock('../apiUtils/database/DatabaseFactory');
 jest.mock('../apiUtils/storage/StorageFactory');
 
 describe('Releases API', () => {
+  const originalEnv = process.env;
+
+  const buildAuthCookie = (): string =>
+    `${SESSION_COOKIE_NAME}=${encodeURIComponent(createSessionToken())}`;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env = {
+      ...originalEnv,
+      ADMIN_PASSWORD: 'admin-password',
+      ADMIN_SESSION_SECRET: 'session-secret',
+    };
+  });
+
+  afterAll(() => {
+    process.env = originalEnv;
   });
 
   it('should return 405 for non-GET requests', async () => {
@@ -17,6 +32,14 @@ describe('Releases API', () => {
     await releasesHandler(req, res);
     expect(res._getStatusCode()).toBe(405);
     expect(JSON.parse(res._getData())).toMatchSnapshot();
+  });
+
+  it('should return 401 when no admin session cookie is provided', async () => {
+    const { req, res } = createMocks({ method: 'GET' });
+    await releasesHandler(req, res);
+
+    expect(res._getStatusCode()).toBe(401);
+    expect(JSON.parse(res._getData())).toEqual({ error: 'Unauthorized' });
   });
 
   it('should return releases successfully', async () => {
@@ -49,7 +72,10 @@ describe('Releases API', () => {
     (StorageFactory.getStorage as jest.Mock).mockReturnValue(mockStorage);
     (DatabaseFactory.getDatabase as jest.Mock).mockReturnValue(mockDatabase);
 
-    const { req, res } = createMocks({ method: 'GET' });
+    const { req, res } = createMocks({
+      method: 'GET',
+      headers: { cookie: buildAuthCookie() },
+    });
     await releasesHandler(req, res);
 
     expect(res._getStatusCode()).toBe(200);
@@ -86,7 +112,10 @@ describe('Releases API', () => {
     (StorageFactory.getStorage as jest.Mock).mockReturnValue(mockStorage);
     (DatabaseFactory.getDatabase as jest.Mock).mockReturnValue(mockDatabase);
 
-    const { req, res } = createMocks({ method: 'GET' });
+    const { req, res } = createMocks({
+      method: 'GET',
+      headers: { cookie: buildAuthCookie() },
+    });
     await releasesHandler(req, res);
 
     expect(res._getStatusCode()).toBe(200);
@@ -101,7 +130,10 @@ describe('Releases API', () => {
 
     (StorageFactory.getStorage as jest.Mock).mockReturnValue(mockStorage);
 
-    const { req, res } = createMocks({ method: 'GET' });
+    const { req, res } = createMocks({
+      method: 'GET',
+      headers: { cookie: buildAuthCookie() },
+    });
     await releasesHandler(req, res);
 
     expect(res._getStatusCode()).toBe(500);

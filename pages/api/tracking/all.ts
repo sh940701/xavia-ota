@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DatabaseFactory } from '../../../apiUtils/database/DatabaseFactory';
+import { requireAdminApiAuth } from '../../../apiUtils/helpers/AuthHelper';
 import { getLogger } from '../../../apiUtils/logger';
 import { TrackingMetrics } from '../../../apiUtils/database/DatabaseInterface';
 
@@ -13,6 +14,10 @@ export interface AllTrackingResponse {
 export default async function allTrackingHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  if (!requireAdminApiAuth(req, res)) {
     return;
   }
 

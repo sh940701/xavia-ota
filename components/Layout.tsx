@@ -11,9 +11,12 @@ export default function Layout({ children, ...props }: { children: React.ReactNo
     { name: 'Releases', path: '/releases', icon: <FaTags size="1rem" /> },
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    router.push('/');
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/logout', { method: 'POST' });
+    } finally {
+      router.push('/');
+    }
   };
 
   return (
@@ -28,7 +31,8 @@ export default function Layout({ children, ...props }: { children: React.ReactNo
         px={4}
         style={{
           background: 'linear-gradient(180deg, #5655D7 0%, #3d3cb8 100%)',
-        }}>
+        }}
+      >
         {/* Logo */}
         <Box mb={10} px={2} pt={2}>
           <Image
@@ -61,7 +65,8 @@ export default function Layout({ children, ...props }: { children: React.ReactNo
                 style={{ opacity: isActive ? 1 : 0.72 }}
                 _hover={{ bg: 'rgba(255,255,255,0.14)', opacity: 1 }}
                 transition="all 0.15s ease"
-                onClick={() => router.push(item.path)}>
+                onClick={() => router.push(item.path)}
+              >
                 {item.icon}
                 <Text>{item.name}</Text>
               </Box>
@@ -83,7 +88,8 @@ export default function Layout({ children, ...props }: { children: React.ReactNo
           style={{ opacity: 0.65 }}
           _hover={{ bg: 'rgba(255,255,255,0.12)', opacity: 1 }}
           transition="all 0.15s ease"
-          onClick={handleLogout}>
+          onClick={handleLogout}
+        >
           <FaSignOutAlt size="1rem" />
           <Text>Logout</Text>
         </Box>

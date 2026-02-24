@@ -1,0 +1,1 @@
+TypeScript + Next.js project. Follow existing npm scripts and linting rules. Prefer environment-driven config via .env files; avoid hardcoding secrets.

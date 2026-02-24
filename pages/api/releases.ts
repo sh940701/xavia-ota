@@ -1,11 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { DatabaseFactory } from '../../apiUtils/database/DatabaseFactory';
+import { requireAdminApiAuth } from '../../apiUtils/helpers/AuthHelper';
 import { StorageFactory } from '../../apiUtils/storage/StorageFactory';
 
 export default async function releasesHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  if (!requireAdminApiAuth(req, res)) {
     return;
   }
 

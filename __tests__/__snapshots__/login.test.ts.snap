@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Login API should return 200 for correct password 1`] = `
+exports[`Login API should return 200 and issue admin session cookie for correct password 1`] = `
 Object {
   "success": true,
 }

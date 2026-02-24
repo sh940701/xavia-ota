@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { setSessionCookie } from '../../apiUtils/helpers/AuthHelper';
 
 export default async function loginEndpoint(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -15,6 +16,7 @@ export default async function loginEndpoint(req: NextApiRequest, res: NextApiRes
   }
 
   if (password === adminPassword) {
+    setSessionCookie(res);
     res.status(200).json({ success: true });
   } else {
     res.status(401).json({ error: 'Invalid password' });

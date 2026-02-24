@@ -32,7 +32,6 @@ export default function Home() {
       if (!response.ok) {
         setError(data.error);
       } else {
-        localStorage.setItem('isAuthenticated', 'true');
         router.push('/dashboard');
       }
     } catch (err) {
@@ -47,7 +46,8 @@ export default function Home() {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      style={{ background: 'linear-gradient(135deg, #5655D7 0%, #3d3cb8 50%, #2d2c8a 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #5655D7 0%, #3d3cb8 50%, #2d2c8a 100%)' }}
+    >
       <Box
         bg="white"
         borderRadius="20px"
@@ -55,7 +55,8 @@ export default function Home() {
         w="full"
         maxW="400px"
         mx={4}
-        boxShadow="0 25px 60px rgba(0,0,0,0.3)">
+        boxShadow="0 25px 60px rgba(0,0,0,0.3)"
+      >
         {/* Logo */}
         <Box display="flex" justifyContent="center" mb={8}>
           <Image
@@ -101,9 +102,14 @@ export default function Home() {
               bg="#5655D7"
               color="white"
               fontWeight="600"
-              _hover={{ bg: '#4D4CC1', transform: 'translateY(-1px)', boxShadow: '0 4px 12px rgba(86,85,215,0.4)' }}
+              _hover={{
+                bg: '#4D4CC1',
+                transform: 'translateY(-1px)',
+                boxShadow: '0 4px 12px rgba(86,85,215,0.4)',
+              }}
               _active={{ bg: '#4040A1', transform: 'translateY(0)' }}
-              transition="all 0.15s ease">
+              transition="all 0.15s ease"
+            >
               Sign In
             </Button>
           </VStack>

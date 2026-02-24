@@ -1,62 +1,55 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Check if the correct number of arguments are provided
 if [ "$#" -ne 3 ]; then
   echo "Usage: $0 <runtimeVersion> <xavia-ota-url> <upload-key>"
   exit 1
 fi
 
-# Get the current commit hash and message
+runtimeVersion="$1"
+serverHost="$2"
+uploadKey="$3"
+
 commitHash=$(git rev-parse HEAD)
 commitMessage=$(git log -1 --pretty=%B)
 
-# Assign arguments to variables
-runtimeVersion=$1
-serverHost=$2
-uploadKey=$3
-
-# Generate a timestamp for the output folder
 timestamp=$(date -u +%Y%m%d%H%M%S)
-outputFolder="../ota-builds/$timestamp"
+outputFolder="../ota-builds/${timestamp}"
+uploadUrl="${serverHost%/}/api/upload"
 
-# Ask the user to confirm the hash, commit message, runtime version, and output folder
-echo "Output Folder: $outputFolder"
-echo "Runtime Version: $runtimeVersion"
-echo "Commit Hash: $commitHash"
-echo "Commit Message: $commitMessage"
+echo "Output Folder: ${outputFolder}"
+echo "Runtime Version: ${runtimeVersion}"
+echo "Commit Hash: ${commitHash}"
+echo "Commit Message: ${commitMessage}"
+echo "Upload URL: ${uploadUrl}"
 
 read -p "Do you want to proceed with these values? (y/n): " confirm
-
-if [ "$confirm" != "y" ]; then
+if [ "${confirm}" != "y" ]; then
   echo "Operation cancelled by the user."
   exit 1
 fi
 
-rm -rf $outputFolder
-mkdir -p $outputFolder
+rm -rf "${outputFolder}"
+mkdir -p "${outputFolder}"
 
-# Run expo export with the specified output folder
-npx expo export --output-dir $outputFolder
+npx expo export --output-dir "${outputFolder}"
+jq '.expo' app.json > "${outputFolder}/expoconfig.json"
 
-# Extract expo config property from app.json and save to expoconfig.json
-jq '.expo' app.json > $outputFolder/expoconfig.json
+(
+  cd "${outputFolder}"
+  zip -q -r "${timestamp}.zip" .
 
-
-# Zip the output folder
-cd $outputFolder  
-zip -q -r ${timestamp}.zip .
-
-
-# Upload the zip file to the server
-curl -X POST $serverHost/api/upload -F "file=@${timestamp}.zip" -F "runtimeVersion=$runtimeVersion" -F "commitHash=$commitHash" -F "commitMessage=$commitMessage" -F "uploadKey=$uploadKey"
+  curl -X POST "${uploadUrl}" \
+    -F "file=@${timestamp}.zip" \
+    -F "runtimeVersion=${runtimeVersion}" \
+    -F "commitHash=${commitHash}" \
+    -F "commitMessage=${commitMessage}" \
+    -F "uploadKey=${uploadKey}"
+)
 
 echo ""
+echo "Uploaded to ${uploadUrl}"
 
-echo "Uploaded to $serverHost/api/upload"
-cd ..
-
-# Remove the output folder and zip file
-rm -rf $outputFolder
-
-echo "Removed $outputFolder"
+rm -rf "${outputFolder}"
+echo "Removed ${outputFolder}"
 echo "Done"
