@@ -13,20 +13,37 @@ export class S3Storage implements StorageInterface {
   private bucketName: string;
 
   constructor() {
-    if (!process.env.S3_ACCESS_KEY_ID || !process.env.S3_SECRET_ACCESS_KEY) {
-      throw new Error('S3 credentials not configured');
-    }
+    const accessKeyId = process.env.S3_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY;
+    const sessionToken = process.env.S3_SESSION_TOKEN;
+
     if (!process.env.S3_BUCKET_NAME) {
       throw new Error('S3 bucket name not configured');
     }
-    this.client = new S3Client({
+
+    if (
+      (accessKeyId && !secretAccessKey) ||
+      (!accessKeyId && secretAccessKey)
+    ) {
+      throw new Error(
+        'Incomplete S3 static credentials. Set both S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY, or neither.'
+      );
+    }
+
+    const config: ConstructorParameters<typeof S3Client>[0] = {
       region: process.env.S3_REGION ?? 'auto',
       endpoint: process.env.S3_ENDPOINT,
-      credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY_ID,
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-      },
-    });
+    };
+
+    if (accessKeyId && secretAccessKey) {
+      config.credentials = {
+        accessKeyId,
+        secretAccessKey,
+        ...(sessionToken ? { sessionToken } : {}),
+      };
+    }
+
+    this.client = new S3Client(config);
     this.bucketName = process.env.S3_BUCKET_NAME;
   }
 

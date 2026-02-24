@@ -102,8 +102,13 @@ S3_REGION=
 S3_ENDPOINT=
 S3_ACCESS_KEY_ID=
 S3_SECRET_ACCESS_KEY=
+S3_SESSION_TOKEN=
 S3_BUCKET_NAME=
 ```
+
+- `S3_BUCKET_NAME`은 필수
+- `S3_ACCESS_KEY_ID` + `S3_SECRET_ACCESS_KEY`는 static key 모드에서만 사용
+- EC2 IAM Role 사용 시 `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`를 비우고 기본 credential chain 사용
 
 `supabase`:
 

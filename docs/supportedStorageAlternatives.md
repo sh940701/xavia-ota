@@ -32,13 +32,17 @@ GCP_BUCKET_NAME=your-gcs-bucket-name
 ### AWS S3 Compatible Storage
 ```env
 BLOB_STORAGE_TYPE=s3
-S3_REGION=auto
-S3_ENDPOINT=your-s3-endpoint
-S3_ACCESS_KEY_ID=your-access-key-id
-S3_SECRET_ACCESS_KEY=your-secret-access-key
+S3_REGION=ap-northeast-2
+S3_ENDPOINT=
+S3_ACCESS_KEY_ID=
+S3_SECRET_ACCESS_KEY=
+S3_SESSION_TOKEN=
 S3_BUCKET_NAME=your-s3-bucket-name
 ```
 - Support all S3 compatible storage (AWS S3, Digital Ocean Spaces, Cloudflare R2, etc.)
+- `S3_BUCKET_NAME` is required
+- Static key mode: set `S3_ACCESS_KEY_ID` + `S3_SECRET_ACCESS_KEY` (optional `S3_SESSION_TOKEN`)
+- IAM/default credential mode: leave `S3_ACCESS_KEY_ID` and `S3_SECRET_ACCESS_KEY` empty (for example EC2 IAM Role)
 - Bucket should be created manually before starting the server
 
 ## Supported Database Providers
