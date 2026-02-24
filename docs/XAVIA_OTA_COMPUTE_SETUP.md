@@ -123,6 +123,20 @@ SUPABASE_BUCKET_NAME=expo-updates
 3. AWS + Supabase: `DB_TYPE=supabase` + `BLOB_STORAGE_TYPE=supabase`
 4. 혼합형: `DB_TYPE=supabase` + `BLOB_STORAGE_TYPE=s3` (또는 반대)
 
+## 2.6 인스턴스 Bucket 권한(필수)
+
+1. AWS(`BLOB_STORAGE_TYPE=s3` + IAM 모드)
+- EC2 인스턴스에 Instance Profile(IAM Role) 연결
+- 해당 Role에 대상 bucket 권한 부여(최소: `s3:ListBucket`, `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`)
+- IAM 모드에서는 `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`를 비움
+- 이 모드는 AWS 런타임(EC2/ECS 등)에서만 바로 동작
+- Compute Engine에서 S3를 직접 쓰는 경우는 기본적으로 static key 모드 사용
+
+2. GCP(`BLOB_STORAGE_TYPE=gcs`)
+- Compute Engine 인스턴스에 Service Account 연결
+- 대상 bucket에 `roles/storage.objectAdmin` 권한 부여
+- 버킷 IAM/수명주기까지 관리하려면 `roles/storage.admin` 사용 가능(권한이 더 큼)
+
 ---
 
 ## 3. `.env.gcp` / `.env.aws` 운영 규칙
@@ -162,7 +176,12 @@ Terraform이 담당할 항목(권장):
 - OTA 전용 DB 1개
 - OTA 전용 DB User 1개
 - 기존 PostgreSQL 인스턴스는 그대로 사용
-5. GCS bucket (GCP 배포 시)
+5. Bucket 리소스
+- GCP 배포 시: GCS bucket
+- AWS 배포 시: S3 bucket
+6. 인스턴스 Identity + Bucket 권한 바인딩
+- GCP: VM Service Account에 bucket 수준 `roles/storage.objectAdmin` 부여
+- AWS: EC2 Instance Profile Role에 bucket 정책(`s3:ListBucket`, `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`) 부여
 
 Terraform에서 하지 않을 항목:
 
