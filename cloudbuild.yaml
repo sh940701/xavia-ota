@@ -1,0 +1,72 @@
+# Xavia OTA (fitters-log build) — auto-deploy via Cloud Build.
+#
+# Trigger: GitHub push to ^main$ on sh940701/xavia-ota.
+# Same MIG as the Go API — surge=1 rolling-replace pulls the new image
+# via cloud-init on each replaced VM.
+substitutions:
+  _REGION: asia-northeast3
+  _AR_REPO: asia-northeast3-docker.pkg.dev/syeong-root/fitters-log-containers
+  _MIG_NAME: fitters-log-api-mig
+
+steps:
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --platform=linux/amd64
+      - --tag=${_AR_REPO}/ota:${SHORT_SHA}
+      - --tag=${_AR_REPO}/ota:latest
+      - .
+
+  - id: push-sha
+    name: gcr.io/cloud-builders/docker
+    args: [push, '${_AR_REPO}/ota:${SHORT_SHA}']
+    waitFor: [build]
+
+  - id: push-latest
+    name: gcr.io/cloud-builders/docker
+    args: [push, '${_AR_REPO}/ota:latest']
+    waitFor: [build]
+
+  - id: roll-mig
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - compute
+      - instance-groups
+      - managed
+      - rolling-action
+      - replace
+      - ${_MIG_NAME}
+      - --region=${_REGION}
+      - --max-surge=1
+      - --max-unavailable=0
+    waitFor: [push-sha, push-latest]
+
+  # Block until the MIG settles (all VMs running + health checks healthy)
+  # so a crash-looping container is reported as a build failure rather
+  # than green-on-async-accept.
+  - id: wait-stable
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - compute
+      - instance-groups
+      - managed
+      - wait-until
+      - ${_MIG_NAME}
+      - --stable
+      - --region=${_REGION}
+      - --timeout=600
+    waitFor: [roll-mig]
+
+images:
+  - '${_AR_REPO}/ota:${SHORT_SHA}'
+  - '${_AR_REPO}/ota:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_MEDIUM
+
+timeout: 2100s
+tags: [fitters-log, ota]
