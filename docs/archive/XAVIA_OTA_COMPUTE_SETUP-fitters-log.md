@@ -1,3 +1,5 @@
+> **ARCHIVED — superseded by GCP migration.** Describes the decommissioned AWS deployment (EC2/Elastic IP/Security Group/S3/Route53/IAM, SSH manual deploy). The live deployment is GCP: `cloudbuild.yaml` → Artifact Registry → the `fitters-log-api-mig` MIG container on host port 3001 (`BLOB_STORAGE_TYPE=gcs`, `DB_TYPE=supabase`), manual `gcloud builds submit` only. Canonical reference: the "Deployment (fitters-log / GCP)" section of `CLAUDE.md`. Kept for history only.
+
 # Xavia OTA — fitters-log AWS 배포 가이드
 
 업데이트 날짜: **2026-02-25**

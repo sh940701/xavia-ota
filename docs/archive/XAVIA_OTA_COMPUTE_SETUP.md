@@ -1,3 +1,5 @@
+> **ARCHIVED — superseded by GCP migration.** Describes the SSH-based manual Compute Engine deployment (no Cloud Build) using `.env.gcp`/`.env.aws`. The live deployment no longer uses SSH or per-VM `.env` files: it is `cloudbuild.yaml` → Artifact Registry → the `fitters-log-api-mig` MIG container on host port 3001, with env/secrets injected by the MIG cloud-init (`BLOB_STORAGE_TYPE=gcs`, `DB_TYPE=supabase`). Canonical reference: the "Deployment (fitters-log / GCP)" section of `CLAUDE.md`. Kept for history only.
+
 # Xavia OTA Compute Engine 수동 배포 가이드 (.env.gcp / .env.aws 기준)
 
 업데이트 날짜: **2026-02-24**
