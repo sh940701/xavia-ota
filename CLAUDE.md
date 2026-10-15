@@ -38,7 +38,7 @@ Development requires Docker running (for the PostgreSQL container). The `npm run
 
 **Database layer** (`apiUtils/database/`): `DatabaseInterface` with implementations selected by `DB_TYPE` env var via `DatabaseFactory` (singleton). Currently supports PostgreSQL (`LocalDatabase.ts`) and Supabase (`SupabaseDatabase.ts`).
 
-**Storage layer** (`apiUtils/storage/`): `StorageInterface` with implementations selected by `BLOB_STORAGE_TYPE` env var via `StorageFactory`. Supports: `local` (filesystem), `supabase`, `gcs` (Google Cloud Storage), `s3` (AWS S3-compatible).
+**Storage layer** (`apiUtils/storage/`): `StorageInterface` with implementations selected by `BLOB_STORAGE_TYPE` env var via `StorageFactory`. Supports: `local` (filesystem), `supabase`, `gcs` (Google Cloud Storage).
 
 **Helpers** (`apiUtils/helpers/`):
 - `UpdateHelper` - Resolves latest update paths, builds manifests, handles rollback/no-update directives

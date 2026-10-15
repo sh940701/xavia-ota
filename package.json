@@ -8,13 +8,9 @@
     "start": "next start",
     "lint": "eslint apiUtils pages",
     "test": "jest",
-    "prepare": "husky",
-    "release": "bash ./scripts/release.sh",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+    "prepare": "husky"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.779.0",
-    "@chakra-ui/next-js": "^2.4.2",
     "@chakra-ui/react": "^2.10.4",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -37,7 +33,6 @@
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
     "@commitlint/config-conventional": "^19.0.0",
-    "@expo/config": "^10.0.4",
     "@next/eslint-plugin-next": "^15.0.3",
     "@types/adm-zip": "^0.5.6",
     "@types/formidable": "^3.4.5",
@@ -46,7 +41,6 @@
     "@types/pg": "^8.11.10",
     "@types/react": "^18.0.1",
     "autoprefixer": "^10.4.20",
-    "conventional-changelog-cli": "^4.1.0",
     "eslint": "^8.13.0",
     "eslint-config-universe": "^11.0.0-beta.0",
     "husky": "^9.1.7",
@@ -55,7 +49,6 @@
     "nullthrows": "^1.1.1",
     "postcss": "^8.4.49",
     "prettier": "^2.6.2",
-    "standard-version": "^9.5.0",
     "tailwindcss": "^3.4.15",
     "typescript": "^4.6.3"
   }

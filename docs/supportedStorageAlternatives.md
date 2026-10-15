@@ -28,25 +28,9 @@ GCP_BUCKET_NAME=your-gcs-bucket-name
 ```
 - Requires a GCP project with GCS bucket enabled
 - Bucket should be created manually before starting the server
-- Compute Engine 런타임이면 VM Service Account에 대상 bucket `roles/storage.objectAdmin` 권한을 부여해야 함
+- On Compute Engine, grant the VM service account `roles/storage.objectAdmin` on the target bucket
 
-### AWS S3 Compatible Storage
-```env
-BLOB_STORAGE_TYPE=s3
-S3_REGION=ap-northeast-2
-S3_ENDPOINT=
-S3_ACCESS_KEY_ID=
-S3_SECRET_ACCESS_KEY=
-S3_SESSION_TOKEN=
-S3_BUCKET_NAME=your-s3-bucket-name
-```
-- Support all S3 compatible storage (AWS S3, Digital Ocean Spaces, Cloudflare R2, etc.)
-- `S3_BUCKET_NAME` is required
-- Static key mode: set `S3_ACCESS_KEY_ID` + `S3_SECRET_ACCESS_KEY` (optional `S3_SESSION_TOKEN`)
-- IAM/default credential mode: leave `S3_ACCESS_KEY_ID` and `S3_SECRET_ACCESS_KEY` empty (for example EC2 IAM Role)
-- IAM 모드는 AWS 런타임(EC2/ECS 등) 기준이며, Compute Engine에서 S3를 사용할 때는 기본적으로 static key 모드 사용
-- IAM 모드에서는 EC2 Instance Profile Role에 bucket 권한(`s3:ListBucket`, `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`)이 있어야 함
-- Bucket should be created manually before starting the server
+fitters-log production: `BLOB_STORAGE_TYPE=gcs` + `DB_TYPE=supabase`
 
 ## Supported Database Providers
 Database configuration is managed via `DB_TYPE`.
