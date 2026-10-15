@@ -1,1 +1,0 @@
-xavia-ota is a Next.js + TypeScript self-hosted OTA updates server for Expo/React Native. It serves manifest/assets and includes an admin dashboard, DB tracking, rollback flows, and multiple storage backends (local, gcs, s3, supabase).

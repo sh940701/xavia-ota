@@ -1,1 +1,0 @@
-After changes: run npm run lint and npm test (or targeted tests), and verify npm run build for deployment-related updates. Confirm env variable wiring and startup path (npm run start).

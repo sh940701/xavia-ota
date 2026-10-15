@@ -1,8 +1,5 @@
 # Xavia OTA Updates Server
 
-[![Tests](https://github.com/xavia-io/xavia-ota/actions/workflows/test.yml/badge.svg)](https://github.com/xavia-io/xavia-ota/actions/workflows/test.yml)
-[![Docker Pulls](https://img.shields.io/docker/pulls/xaviaio/xavia-ota)](https://hub.docker.com/r/xaviaio/xavia-ota)
-[![Docker Image Size](https://img.shields.io/docker/image-size/xaviaio/xavia-ota/latest)](https://hub.docker.com/r/xaviaio/xavia-ota)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A self-hosted Over-The-Air (OTA) updates server for Expo/RN applications that gives you complete control over your app's update distribution. Built with Next.js and TypeScript, it implements the expo-updates protocol while providing additional features for enterprise use.
@@ -59,23 +56,18 @@ This system provides a robust OTA update infrastructure with these key component
 
 ## Deployment
 
-The easiest way to deploy Xavia OTA is using our public Docker image. The image is available on Docker Hub at [xaviaio/xavia-ota](https://hub.docker.com/repository/docker/xaviaio/xavia-ota).
-
-1. You can copy the `docker-compose.yml` file in the `containers/prod` folder and set the environment variables properly.
-2. Or if you like the longer route, you can pull the image and run it manually
-
-   ` docker run -d -p 3000:3000 xaviaio/xavia-ota -e HOST=http://localhost:3000 ...`
+fitters-log: see [CLAUDE.md](./CLAUDE.md) (Deployment section). GCP MIG, manual `gcloud builds submit --config=cloudbuild.yaml .`, secrets in GCP Secret Manager, upload-key rotation.
 
 ### Load test your deployment setup
 
-Check [this](./docs/laod_testing.md) on how to run load testing for your OTA server in your deployment infrastructure.
+Check [this](./docs/load_testing.md) on how to run load testing for your OTA server in your deployment infrastructure.
 
 ## Local Development
 
 1. Clone the repository and install dependencies:
 
    ```bash
-   git clone git@github.com:xavia-io/xavia-ota.git
+   git clone git@github.com:sh940701/xavia-ota.git
    cd xavia-ota
    npm install
    ```
@@ -83,13 +75,13 @@ Check [this](./docs/laod_testing.md) on how to run load testing for your OTA ser
 2. Copy the example local env file:
 
    ```bash
-   cp .env.example.local .env.local
+   cp .env.example .env.local
    ```
 
 3. Configure your environment variables in `.env.local`. The minimal required configuration is:
 
    ```env
-   HOST=http://localhost:3000
+   HOST=http://localhost:3001
    BLOB_STORAGE_TYPE=local
    DB_TYPE=postgres
    ADMIN_PASSWORD=your-admin-password
@@ -109,7 +101,7 @@ Check [this](./docs/laod_testing.md) on how to run load testing for your OTA ser
    npm run dev
    ```
 
-The server and admin dashboard will be available at `http://localhost:3000`.
+The server and admin dashboard will be available at `http://localhost:3001`.
 
 Refer to [Storage & Database Configuration](./docs/supportedStorageAlternatives.md) for more configuration options.
 

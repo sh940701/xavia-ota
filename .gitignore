@@ -40,9 +40,13 @@ code-signing-keys
 .idea
 
 .env*
+!.env.example
 
 # Claude
 .claude/
 
 # Firebase
 firebase-debug.log
+
+# Serena
+.serena/
