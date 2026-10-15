@@ -81,7 +81,7 @@ Check [this](./docs/load_testing.md) on how to run load testing for your OTA ser
 3. Configure your environment variables in `.env.local`. The minimal required configuration is:
 
    ```env
-   HOST=http://localhost:3000
+   HOST=http://localhost:3001
    BLOB_STORAGE_TYPE=local
    DB_TYPE=postgres
    ADMIN_PASSWORD=your-admin-password
