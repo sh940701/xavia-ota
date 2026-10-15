@@ -46,3 +46,6 @@ code-signing-keys
 
 # Firebase
 firebase-debug.log
+
+# Serena
+.serena/
