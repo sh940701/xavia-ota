@@ -74,7 +74,7 @@ Two tables in PostgreSQL (`containers/database/schema/`):
 Key env vars (see `.env.example` for full list):
 - `HOST` - Server URL (prod: `https://ota.fitters-log.com`)
 - `PORT` - Internal listen port (prod container: `3000`, mapped to host `3001` in the MIG)
-- `BLOB_STORAGE_TYPE` - `local` | `supabase` | `gcs` | `s3` (prod: `gcs`)
+- `BLOB_STORAGE_TYPE` - `local` | `supabase` | `gcs` (prod: `gcs`; the S3 adapter was removed 2026-10-15)
 - `DB_TYPE` - `postgres` | `supabase` (prod: `supabase`)
 - `GCP_BUCKET_NAME` - GCS bucket name (required when `BLOB_STORAGE_TYPE=gcs`)
 - `SUPABASE_URL` / `SUPABASE_API_KEY` - Supabase connection (required when `DB_TYPE=supabase`)
