@@ -1,8 +1,8 @@
 # Xavia OTA (fitters-log build) — auto-deploy via Cloud Build.
 #
-# Trigger: GitHub push to ^main$ on sh940701/xavia-ota.
-# Same MIG as the Go API — surge=1 rolling-replace pulls the new image
-# via cloud-init on each replaced VM.
+# Manual deploy: `gcloud builds submit --config=cloudbuild.yaml .` from a checkout of `main`.
+# There is NO Cloud Build trigger for this repo (decision: manual).
+# Rolls the prod MIG; dev OTA is deployed by the infra-gcp dev startup script.
 substitutions:
   _REGION: asia-northeast3
   _AR_REPO: asia-northeast3-docker.pkg.dev/syeong-root/fitters-log-containers
